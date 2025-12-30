@@ -1,31 +1,36 @@
-import os
-from dotenv import load_dotenv
+from src.api_client import fetch_pl_fixtures
 from supabase import create_client
-from src.mock_api import get_mock_pl_fixtures # Import mock instead of real API
+import os
 
-load_dotenv()
 supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
-def sync_mock_data():
-    print("🧪 Syncing Mock Data for testing...")
-    data = get_mock_pl_fixtures()
-    
-    for item in data:
-        f = item['fixture']
-        t = item['teams']
-        
-        match_data = {
-            "fixture_id": f['id'],
-            "matchday": f['match_day'],
-            "kickoff_time": f['date'],
-            "home_team": t['home']['name'],
-            "away_team": t['away']['name'],
-            "status": f['status']['short'],
-            "final_score": None
+def sync():
+    matches = fetch_pl_fixtures()
+    print(f"🔄 Syncing {len(matches)} matches...")
+    exit()
+
+    for m in matches:
+        # Prepare the row for Supabase
+        row = {
+            "fixture_id": m['id'],
+            "home_team": m['homeTeam']['name'],
+            "away_team": m['awayTeam']['name'],
+            "kickoff_time": m['utcDate'],
+            "status": m['status']
         }
-        supabase.table("mock_fixtures").upsert(match_data).execute()
-    
-    print("✅ Mock fixtures uploaded to Supabase!")
+        
+        # Calculate score ONLY if the match is finished
+        if m['status'] == 'FINISHED':
+            h_score = m['score']['fullTime']['home']
+            a_score = m['score']['fullTime']['away']
+            
+            if h_score > a_score: row["final_score"] = "HOME_WIN"
+            elif a_score > h_score: row["final_score"] = "AWAY_WIN"
+            else: row["final_score"] = "DRAW"
+
+        supabase.table("fixtures").upsert(row).execute()
+
+    print("✅ 2025/26 Season Synced!")
 
 if __name__ == "__main__":
-    sync_mock_data()
+    sync()
