@@ -33,3 +33,19 @@ def logout_user():
 def get_current_user():
     """Retrieves the currently logged-in user details."""
     return supabase.auth.get_user()
+
+def get_session_user_id(st_session_state):
+    """
+    Safely retrieves the user ID from session state, 
+    handling both Supabase User objects and standard dictionaries.
+    """
+    user = st_session_state.get('user')
+    if not user:
+        return None
+    
+    # If it's a dictionary (common after a rerun)
+    if isinstance(user, dict):
+        return user.get('id')
+    
+    # If it's a Supabase User object
+    return getattr(user, 'id', None)
