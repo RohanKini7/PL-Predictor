@@ -49,7 +49,7 @@ def main():
 
     # 7. Routing to Views
     if nav == "Home (Fixtures)":
-        home_view.show_home(supabase=supabase)
+        home_view.show_home(supabase=supabase, user_id=st.session_state.user_id)
     elif nav == "My Predictions":
         st.title("📂 My Predictions")
         st.info("Feature coming next!")

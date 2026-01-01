@@ -22,3 +22,30 @@ def is_match_locked(kickoff_time_str):
     kickoff = datetime.fromisoformat(kickoff_time_str.replace('Z', '+00:00'))
     now = datetime.now(timezone.utc)
     return (kickoff - now) < timedelta(hours=1)
+
+def get_score_display(match: dict) -> str:
+    score_data = match.get("score", {}).get("fullTime", {})
+    home_score = score_data.get("home")
+    away_score = score_data.get("away")
+    return f"{home_score} - {away_score}"
+
+
+def get_user_predictions(supabase, user_id):
+    """
+    Accepts supabase as an argument.
+    This makes the function "pure" and decoupled from environment variables.
+    """
+    response = supabase.table("predictions") \
+        .select("fixture_id, prediction") \
+        .eq("user_id", user_id) \
+        .execute()
+
+    return {item['fixture_id']: item['prediction'] for item in response.data}
+
+def handle_prediction_save(supabase, user_id: str, fixture_id:str, user_choice:str ):
+    prediction_data = {
+        "user_id": user_id,
+        "fixture_id": fixture_id,
+        "prediction": user_choice  # Ensure this matches your column name in Supabase
+    }
+    supabase.table("predictions").upsert(prediction_data, on_conflict="user_id, fixture_id",).execute()
