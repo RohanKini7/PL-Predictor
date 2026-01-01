@@ -5,43 +5,46 @@ import json
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 
-from src.logic.match_processor import process_fixtures, is_match_locked, get_user_predictions
-from .components import render_match_card
+from src.logic.match_processor import (
+    process_fixtures, is_match_locked, get_user_predictions, get_upcoming_matches)
+from .upc_components import render_match_card
 from src.utils import PL_CREST
 
 
 def show_home(supabase, user_id:str):
     # 1. Data Fetch
-    json_path = os.path.join(project_root, "..", "mock", "mock_matches.json")
     user_predictions = get_user_predictions(supabase=supabase, user_id=user_id)
+
+    json_path = os.path.join(project_root, "..", "mock", "mock_matches.json")
     with open(json_path, 'r') as f:
         data = json.load(f)
         matches = data.get("matches", [])
-    # 2. Use the "Brain" from src/
-    grouped, current_md = process_fixtures(matches)
+
+    upcoming_matches = get_upcoming_matches(matches)
+    grouped, current_md = process_fixtures(upcoming_matches)
 
     st.markdown("""
         <style>
             .block-container {
                 padding-top: 0rem !important;
                 padding-bottom: 0rem !important;
+                
             }
         </style>
     """, unsafe_allow_html=True)
     with st.container():
-
-        st.markdown('<div style="display: flex; align-items: center;">', unsafe_allow_html=True)
+        st.markdown('<div style="display: flex; align-items: center; ">', unsafe_allow_html=True)
             # Use columns to align the PL Lion and your custom title side-by-side
         head_left, head_right = st.columns([1, 5], vertical_alignment='center')
 
         with head_left:
                 # High-quality PL Crest
-            st.image(PL_CREST, width=300)
+            st.image(PL_CREST, width=200)
 
         with head_right:
             st.markdown("""
-                        <h1 style='margin-bottom: 0; line-height: 1.2; text-align: center;'>
-                            Banter Cave: PL Prediction Championship 25-26
+                        <h1 style='margin-bottom: 0; line-height: 1.2; text-align: center; font-size: 2.75rem;'>
+                            Banter Cave: PL Prediction Championship  
                         </h1>
                     """, unsafe_allow_html=True)
     

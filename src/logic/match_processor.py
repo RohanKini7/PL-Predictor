@@ -49,3 +49,19 @@ def handle_prediction_save(supabase, user_id: str, fixture_id:str, user_choice:s
         "prediction": user_choice  # Ensure this matches your column name in Supabase
     }
     supabase.table("predictions").upsert(prediction_data, on_conflict="user_id, fixture_id",).execute()
+
+def get_upcoming_matches(all_fixtures:dict) -> list:
+    """
+    Filters out matches that have already finished.
+    """
+    # We want matches where status is NOT 'FINISHED'
+    upcoming = [match for match in all_fixtures if match['status'] != 'FINISHED']
+    return upcoming
+
+def get_finished_matches(all_fixtures:dict) -> list:
+    """
+    Filters out matches that have already finished.
+    """
+    # We want matches where status is NOT 'FINISHED'
+    finished_matches = [match for match in all_fixtures if match['status'] == 'FINISHED']
+    return finished_matches

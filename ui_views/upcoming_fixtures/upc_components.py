@@ -49,8 +49,7 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
                             <span style="font-weight: bold;">{away_team}</span>
                         </div>
                     """, unsafe_allow_html=True)
-            # Meta info
-            #st.caption(f"🕒 {match['utcDate']} | Status: {status}")
+
         # 3. Prediction UI Layer
         if status == 'FINISHED':
             # Using markdown to center the text and add a bit of styling

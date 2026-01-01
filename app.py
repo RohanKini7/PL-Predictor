@@ -1,7 +1,8 @@
 import streamlit as st
 import extra_streamlit_components as stx
-from ui_views.home_view import home_view
-from ui_views.login_view import login_view
+from ui_views.upcoming_fixtures import home_view
+from ui_views.login import login_view
+from ui_views.previous_predictions import previous_predictions
 from supabase import create_client
 import os
 from dotenv import load_dotenv
@@ -31,15 +32,27 @@ def main():
     if 'user_id' not in st.session_state:
         # Check if user is a dict or object
         st.session_state.user_id = user['id'] if isinstance(user, dict) else user.id
-
-    # 6. Sidebar Navigation
-    st.sidebar.title("Banter Cave - PL Predictor 25-26")
     
     # Safely get username from metadata
-    username = user.user_metadata.get('username', 'User') if not isinstance(user, dict) else user.get('user_metadata', {}).get('username', 'User')
-    st.sidebar.info(f"Welcome, {username}!")
+
+    username = (user.user_metadata.
+                get('username', 'User')
+                ) \
+        if not isinstance(user, dict) \
+        else user.get('user_metadata', {}).get('username', 'User')
+    st.sidebar.markdown(f"""
+        <div style="
+            background-color: #4E0055; 
+            color: white; 
+            padding: 15px; 
+            margin-bottom: 20px;
+        ">
+            <span style="font-size: 1.2em;"></span> 
+            <b style="margin-left: 10px;">Welcome, {username}!</b>
+        </div>
+    """, unsafe_allow_html=True)
     
-    nav = st.sidebar.radio("Go To", ["Home (Fixtures)", "My Predictions", "Leaderboard"])
+    nav = st.sidebar.radio("Go To", ["Upcoming Fixtures", "My Previous Predictions", "Leaderboard"])
 
     if st.sidebar.button("Logout"):
         # Clear specific keys or just clear everything
@@ -48,11 +61,10 @@ def main():
         st.rerun()
 
     # 7. Routing to Views
-    if nav == "Home (Fixtures)":
+    if nav == "Upcoming Fixtures":
         home_view.show_home(supabase=supabase, user_id=st.session_state.user_id)
-    elif nav == "My Predictions":
-        st.title("My Predictions")
-        st.info("Feature coming next!")
+    elif nav == "My Previous Predictions":
+        previous_predictions.show_home(supabase=supabase, user_id=st.session_state.user_id)
     elif nav == "Leaderboard":
         st.title("Leaderboard")
         st.info("Feature coming soon!")
