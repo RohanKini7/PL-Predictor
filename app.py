@@ -14,10 +14,44 @@ from supabase import create_client
 
 load_dotenv()
 
+
+def apply_custom_styles():
+    """Applies global CSS for mobile responsiveness and UI fixes."""
+    st.markdown("""
+        <style>
+        /* 1. Mobile Responsiveness: Scales titles and cards */
+        @media (max-width: 640px) {
+            h1 { font-size: 1.6rem !important; text-align: center; }
+            .stMarkdown div { padding: 2px !important; }
+            img { width: 25px !important; }
+            .team-name { font-size: 13px !important; }
+        }
+
+        /* 2. Remove background from 'Locked' warning/error boxes */
+        div[data-testid="stNotification"] {
+            background-color: transparent !important;
+            border: none !important;
+            padding: 0 !important;
+            color: white !important;
+        }
+
+        /* 3. Hide index column in st.table */
+        thead tr th:first-child { display:none; }
+        tbody th { display:none; }
+
+        /* 4. General Sidebar styling */
+        [data-testid="stSidebar"] {
+            background-color: #3d0140;
+        }
+        </style>
+    """, unsafe_allow_html=True)
+
 def main():
     # 1. Page Config MUST be the very first Streamlit command
 
     st.set_page_config(page_title="PL Predictor 2025", layout="wide")
+
+    apply_custom_styles()
 
     url = st.secrets["SUPABASE_URL"]
     key = st.secrets["SUPABASE_KEY"]
@@ -42,6 +76,8 @@ def main():
                 ) \
         if not isinstance(user, dict) \
         else user.get('user_metadata', {}).get('username', 'User')
+
+
     st.sidebar.markdown(f"""
         <div style="
             background-color: #4E0055; 
