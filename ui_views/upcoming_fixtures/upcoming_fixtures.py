@@ -39,7 +39,7 @@ def show_upcoming_fixtures(supabase, user_id:str):
                 padding: 10px 0;
                 flex-wrap: wrap;
             ">
-                <img src="{PL_CREST}" style="width: 20px; height: auto;">
+                <img src="{PL_CREST}" style="width: 100px; height: auto;">
                 <h1 style="
                     margin: 0; 
                     line-height: 1.1; 
