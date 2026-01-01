@@ -10,7 +10,7 @@ load_dotenv()
 
 def main():
     # 1. Page Config MUST be the very first Streamlit command
-    st.set_page_config(page_title="PL Predictor 2025", page_icon="⚽", layout="wide")
+    st.set_page_config(page_title="PL Predictor 2025", layout="wide")
 
     # 2. Initialize Supabase
     supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
@@ -33,7 +33,7 @@ def main():
         st.session_state.user_id = user['id'] if isinstance(user, dict) else user.id
 
     # 6. Sidebar Navigation
-    st.sidebar.title("🏆 PL Predictor")
+    st.sidebar.title("Banter Cave - PL Predictor 25-26")
     
     # Safely get username from metadata
     username = user.user_metadata.get('username', 'User') if not isinstance(user, dict) else user.get('user_metadata', {}).get('username', 'User')
@@ -51,10 +51,10 @@ def main():
     if nav == "Home (Fixtures)":
         home_view.show_home(supabase=supabase, user_id=st.session_state.user_id)
     elif nav == "My Predictions":
-        st.title("📂 My Predictions")
+        st.title("My Predictions")
         st.info("Feature coming next!")
     elif nav == "Leaderboard":
-        st.title("📊 Leaderboard")
+        st.title("Leaderboard")
         st.info("Feature coming soon!")
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 import streamlit as st
 from src.logic.match_processor import is_match_locked, get_score_display, handle_prediction_save
-from src.utils import get_team_name
+from src.utils import get_team_name, get_team_badge, PL_CREST
 
 def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_id: str, fixture_id: str ):
     """
@@ -11,40 +11,54 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
     home_team = get_team_name(match=match, team="HOME")
     away_team = get_team_name(match=match, team="AWAY")
 
-    # PL Dark Theme Colors
-    bg_color = "#3d195d"  # Deep PL Purple
-    score_bg = "#111111"  # Black score box
-    text_color = "#ffffff"
+    home_badge = get_team_badge(match=match, team="HOME")
+    away_badge = get_team_badge(match=match, team="AWAY")
 
     # 2. Score Formatting
     score_display = "vs"
     if status in ['FINISHED', 'IN_PLAY', 'PAUSED']:
         score_display = get_score_display(match=match)
 
+    st.divider()  # A clean line to separate the title from the fixtures
         # 2. UI Container (The Match Card)
     with st.container(border=True):
         cols = st.columns([2, 1, 2])
 
         with cols[0]:
-            st.markdown(f"<p style='text-align: right; margin-bottom:0;'><b>{home_team}</b></p>",
-                            unsafe_allow_html=True)
+            st.markdown(f"""
+                        <div style="display: flex; align-items: center; justify-content: flex-end; height: 100%;">
+                            <span style="font-weight: bold; margin-right: 10px;">{home_team}</span>
+                            <img src="{home_badge}" width="35">
+                        </div>
+                    """, unsafe_allow_html=True)
 
         with cols[1]:
-            st.markdown(
-                    f"<p style='text-align: center; border-radius: 5px; margin-bottom:0;'>{score_display}</p>",
-                    unsafe_allow_html=True)
+            st.markdown(f"""
+                        <div style="text-align: center;">
+                            <div  color: white; padding: 5px; border-radius: 5px; font-weight: bold;">
+                                {score_display}
+                            </div>
+                            <div style="font-size: 0.7em; margin-top: 2px; color: #666;">{status if status != 'FINISHED' else 'FT'}</div>
+                        </div>
+                    """, unsafe_allow_html=True)
 
         with cols[2]:
-            st.markdown(f"<p style='text-align: left; margin-bottom:0;'><b>{away_team}</b></p>",
-                            unsafe_allow_html=True)
-
+            st.markdown(f"""
+                        <div style="display: flex; align-items: center; justify-content: flex-start; height: 100%;">
+                            <img src="{away_badge}" width="35" style="margin-right: 10px;">
+                            <span style="font-weight: bold;">{away_team}</span>
+                        </div>
+                    """, unsafe_allow_html=True)
             # Meta info
-            st.caption(f"🕒 {match['utcDate']} | Status: {status}")
+            #st.caption(f"🕒 {match['utcDate']} | Status: {status}")
         # 3. Prediction UI Layer
         if status == 'FINISHED':
-            # Display result and if the user was right/wrong
-            st.write(f"Match Finished. Your pick: **{user_pick or 'No prediction made'}**")
-
+            # Using markdown to center the text and add a bit of styling
+            st.markdown(f"""
+                <div style="text-align: center; padding: 10px; opacity: 0.8; font-size: 0.9em;">
+                    Match Finished. Your pick: <b>{user_pick or 'No prediction'}</b>
+                </div>
+            """, unsafe_allow_html=True)
         elif locked:
             # Show locked symbol and previous prediction
             if user_pick:
@@ -59,9 +73,9 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
 
             # Options mapping
             options = {
-                "HOME_WIN": f"🏠 {home_team}",
+                "HOME_WIN": f" {home_team}",
                 "DRAW": "🤝 Draw",
-                "AWAY_WIN": f"🚀 {away_team}"
+                "AWAY_WIN": f" {away_team}"
             }
 
             for i, (choice_code, display_name) in enumerate(options.items()):
