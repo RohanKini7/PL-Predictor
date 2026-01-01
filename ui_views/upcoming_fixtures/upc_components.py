@@ -22,31 +22,34 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
 
     # 2. UI Container (The Match Card)
     with st.container(border=True):
-        cols = st.columns([2, 1, 2])
-
-        with cols[0]:
-            st.markdown(f"""
-                        <div style="display: flex; align-items: center; justify-content: flex-end; height: 100%;">
-                            <span style="font-weight: bold; margin-right: 10px;">{home_team}</span>
-                            <img src="{home_badge}" width="35">
-                        </div>
-                    """, unsafe_allow_html=True)
-
-        with cols[1]:
-            st.markdown(f"""
-                        <div style="text-align: center;">
-                            <div  color: white; padding: 5px; border-radius: 5px; font-weight: bold;">
-                                {kick_off_time}
-                            </div>
-                    """, unsafe_allow_html=True)
-
-        with cols[2]:
-            st.markdown(f"""
-                        <div style="display: flex; align-items: center; justify-content: flex-start; height: 100%;">
-                            <img src="{away_badge}" width="35" style="margin-right: 10px;">
-                            <span style="font-weight: bold;">{away_team}</span>
-                        </div>
-                    """, unsafe_allow_html=True)
+        st.markdown(f"""
+            <div style="
+                display: flex; 
+                align-items: center; 
+                justify-content: space-between; 
+                width: 100%; 
+                padding: 5px 0;
+                gap: 5px;
+            ">
+                <div style="flex: 1; display: flex; align-items: center; justify-content: flex-end; gap: 10px;">
+                    <span style="font-weight: bold; font-size: clamp(0.9rem, 3vw, 1.1rem); text-align: right;">
+                        {home_team}
+                    </span>
+                    <img src="{home_badge}" width="35" style="flex-shrink: 0;">
+                </div>
+                <div style="flex: 0.6; text-align: center; min-width: 80px;">
+                    <div style="font-size: 0.8rem; color: #ccc; line-height: 1.2;">
+                        {kick_off_time}
+                    </div>
+                </div>
+                <div style="flex: 1; display: flex; align-items: center; justify-content: flex-start; gap: 10px;">
+                    <img src="{away_badge}" width="35" style="flex-shrink: 0;">
+                    <span style="font-weight: bold; font-size: clamp(0.9rem, 3vw, 1.1rem); text-align: left;">
+                        {away_team}
+                    </span>
+                </div>
+            </div>
+        """, unsafe_allow_html=True)
 
         # 3. Prediction UI Layer
         if status == 'FINISHED':

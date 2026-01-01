@@ -11,47 +11,17 @@ from ui_views.login import login_view
 from ui_views.previous_predictions import previous_predictions
 from ui_views.leader_board import leaderboard
 from supabase import create_client
+from src.utils import PL_CREST
 
 load_dotenv()
 
 
-def apply_custom_styles():
-    """Applies global CSS for mobile responsiveness and UI fixes."""
-    st.markdown("""
-        <style>
-        /* 1. Mobile Responsiveness: Scales titles and cards */
-        @media (max-width: 640px) {
-            h1 { font-size: 1.6rem !important; text-align: center; }
-            .stMarkdown div { padding: 2px !important; }
-            img { width: 25px !important; }
-            .team-name { font-size: 13px !important; }
-        }
 
-        /* 2. Remove background from 'Locked' warning/error boxes */
-        div[data-testid="stNotification"] {
-            background-color: transparent !important;
-            border: none !important;
-            padding: 0 !important;
-            color: white !important;
-        }
-
-        /* 3. Hide index column in st.table */
-        thead tr th:first-child { display:none; }
-        tbody th { display:none; }
-
-        /* 4. General Sidebar styling */
-        [data-testid="stSidebar"] {
-            background-color: #3d0140;
-        }
-        </style>
-    """, unsafe_allow_html=True)
 
 def main():
     # 1. Page Config MUST be the very first Streamlit command
 
     st.set_page_config(page_title="PL Predictor 2025", layout="wide")
-
-    apply_custom_styles()
 
     url = st.secrets["SUPABASE_URL"]
     key = st.secrets["SUPABASE_KEY"]
@@ -77,16 +47,23 @@ def main():
         if not isinstance(user, dict) \
         else user.get('user_metadata', {}).get('username', 'User')
 
-
     st.sidebar.markdown(f"""
         <div style="
             background-color: #4E0055; 
             color: white; 
-            padding: 15px; 
+            padding: 20px 10px; 
             margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
         ">
-            <span style="font-size: 1.2em;"></span> 
-            <b style="margin-left: 10px;">Welcome, {username}!</b>
+            <img src="{PL_CREST}" style="width: 400px; height: auto; margin-bottom: 15px;">
+            <div style="text-align: center;">
+                <span style="font-size: 1.1em; opacity: 0.9;">Welcome,</span><br>
+                <b style="font-size: 1.3em; display: block; margin-top: 5px;">{username}!</b>
+            </div>
         </div>
     """, unsafe_allow_html=True)
     

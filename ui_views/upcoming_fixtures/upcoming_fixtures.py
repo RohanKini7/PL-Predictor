@@ -11,7 +11,6 @@ if project_root not in sys.path:
 from src.match_processor import (
     process_fixtures, is_match_locked, get_user_predictions, get_upcoming_matches
 )
-from src.utils import PL_CREST
 from .upc_components import render_match_card
 
 
@@ -29,53 +28,50 @@ def show_upcoming_fixtures(supabase, user_id:str):
     upcoming_matches = get_upcoming_matches(matches)
     grouped, current_md = process_fixtures(upcoming_matches)
 
-    st.markdown(f"""
+
+    st.markdown("""
+        <style>
+            .block-container {
+                padding-top: 0rem !important;
+                padding-bottom: 0rem !important;
+
+            }
+        </style>
+    """, unsafe_allow_html=True)
+    with st.container():
+        st.markdown("""
+            <style>
+                .block-container {
+                    padding-top: 1rem !important;
+                    padding-bottom: 0rem !important;
+                }
+            </style>
+        """, unsafe_allow_html=True)
+
+        # We use raw HTML instead of st.columns to prevent Streamlit's default mobile squashing
+        st.markdown("""
             <div style="
-                display: flex; 
-                flex-direction: row; 
-                align-items: center; 
-                justify-content: center; 
-                gap: 15px; 
-                padding: 10px 0;
-                flex-wrap: wrap;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                margin-bottom: 10px;
             ">
-                <img src="{PL_CREST}" style="width: 20px; height: auto;">
                 <h1 style="
-                    margin: 0; 
-                    line-height: 1.1; 
-                    text-align: center; 
-                    font-size: clamp(1.5rem, 5vw, 2.75rem);
+                    margin: 0;
+                    line-height: 1.1;
+                    text-align: center;
+                    /* clamp(MIN, PREFERRED, MAX) */
+                    /* This makes it huge on desktop (5rem) but stays readable on phone (2.5rem) */
+                    font-size: clamp(2.5rem, 12vw, 5rem);
+                    color: white;
+                    font-weight: 900;
                 ">
-                    Banter Cave: PL Prediction 
+                    Banter Cave: PL Prediction Championship
                 </h1>
             </div>
         """, unsafe_allow_html=True)
-
-    # st.markdown("""
-    #     <style>
-    #         .block-container {
-    #             padding-top: 0rem !important;
-    #             padding-bottom: 0rem !important;
-    #
-    #         }
-    #     </style>
-    # """, unsafe_allow_html=True)
-    # with st.container():
-    #     st.markdown('<div style="display: flex; align-items: center; ">', unsafe_allow_html=True)
-    #         # Use columns to align the PL Lion and your custom title side-by-side
-    #     head_left, head_right = st.columns([1, 5], vertical_alignment='center')
-    #
-    #     with head_left:
-    #             # High-quality PL Crest
-    #         st.image(PL_CREST, width=200)
-    #
-    #     with head_right:
-    #         st.markdown("""
-    #                     <h1 style='margin-bottom: 0; line-height: 1.2; text-align: center; font-size: 2.75rem;'>
-    #                         Banter Cave: PL Prediction Championship
-    #                     </h1>
-    #                 """, unsafe_allow_html=True)
-    
     # 3. Just Render
     for md, matches in grouped.items():
         with st.expander(f"Matchday {md}", expanded=(md == current_md)):

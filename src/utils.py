@@ -1,11 +1,11 @@
-PL_CREST = "https://eu-images.contentstack.com/v3/assets/blt740a130ae3c5d529/blt3402b01ca1f6ac5a/650f094ae864c5cf53bb38c5/Premier_League.png?width=1280&auto=webp&quality=80&format=jpg&disable=upscale"
+PL_CREST = "https://s.yimg.com/ny/api/res/1.2/LphMBtd9JdHMl9V4Gmo2Iw--/YXBwaWQ9aGlnaGxhbmRlcjt3PTIwMDA7aD0xMTI2O2NmPXdlYnA-/https://media.zenfs.com/en/creative_bloq_161/87fefa9e5a05f4e3b07c88f2fe805fcc"
 
 def get_team_name(match: dict, team: str):
     if team == "HOME":
-        return match.get("homeTeam", {}).get("shortName", "Home TBD")
+        return match.get("homeTeam", {}).get("tla", "Home TBD")
     else:
         # This was 'homeTeam' in your version; changed to 'awayTeam'
-        return match.get("awayTeam", {}).get("shortName", "Away TBD")
+        return match.get("awayTeam", {}).get("tla", "Away TBD")
 
 def get_team_badge(match: dict, team: str):
     if team == "HOME":
