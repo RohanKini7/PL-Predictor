@@ -46,7 +46,7 @@ def show_upcoming_fixtures(supabase, user_id:str):
                     text-align: center; 
                     font-size: clamp(1.5rem, 5vw, 2.75rem);
                 ">
-                    Banter Cave: PL Prediction Championship
+                    Banter Cave: PL Prediction 
                 </h1>
             </div>
         """, unsafe_allow_html=True)
