@@ -1,21 +1,27 @@
 import streamlit as st
-import os
+import os, sys
 import json
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(current_dir)
+project_root = os.path.dirname(os.path.dirname(current_dir))
 
-from src.logic.match_processor import (
-    process_fixtures, is_match_locked, get_user_predictions, get_upcoming_matches)
-from .upc_components import render_match_card
+if project_root not in sys.path:
+     sys.path.insert(0, project_root)
+
+from src.match_processor import (
+    process_fixtures, is_match_locked, get_user_predictions, get_upcoming_matches
+)
 from src.utils import PL_CREST
+from .upc_components import render_match_card
 
 
-def show_home(supabase, user_id:str):
+
+
+def show_upcoming_fixtures(supabase, user_id:str):
     # 1. Data Fetch
     user_predictions = get_user_predictions(supabase=supabase, user_id=user_id)
 
-    json_path = os.path.join(project_root, "..", "mock", "mock_matches.json")
+    json_path = os.path.join(project_root, "dataset", "pl_season_data.json")
     with open(json_path, 'r') as f:
         data = json.load(f)
         matches = data.get("matches", [])

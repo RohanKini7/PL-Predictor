@@ -7,10 +7,10 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 
 def test_get_team_badge():
-    json_path = os.path.join(project_root, "mock", "mock_matches.json")
+    json_path = os.path.join(project_root, "dataset", "pl_season_data.json")
 
     if not os.path.exists(json_path):
-        raise FileNotFoundError(f"Could not find mock_matches.json at: {json_path}")
+        raise FileNotFoundError(f"Could not find pl_season_data.json at: {json_path}")
 
     with open(json_path, 'r') as f:
         data = json.load(f)

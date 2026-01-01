@@ -5,17 +5,17 @@ import json
 current_dir = os.path.dirname(os.path.abspath(__file__))
 project_root = os.path.dirname(current_dir)
 
-from src.logic.match_processor import (
+from src.match_processor import (
     process_fixtures, is_match_locked, get_user_predictions, get_finished_matches)
 from .prev_components import render_finished_match_card
 from src.utils import PL_CREST
 
 
-def show_home(supabase, user_id: str):
+def show_previous_fixtures(supabase, user_id: str):
     # 1. Data Fetch
     user_predictions = get_user_predictions(supabase=supabase, user_id=user_id)
 
-    json_path = os.path.join(project_root, "..", "mock", "mock_matches.json")
+    json_path = os.path.join(project_root, "..", "dataset", "pl_season_data.json")
     with open(json_path, 'r') as f:
         data = json.load(f)
         matches = data.get("matches", [])

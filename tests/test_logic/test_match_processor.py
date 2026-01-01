@@ -8,12 +8,12 @@ project_root = os.path.dirname(current_dir)
 if project_root not in sys.path:
     sys.path.insert(0, project_root)
 
-from src.logic.match_processor import process_fixtures, is_match_locked
+from match_processor import process_fixtures, is_match_locked
 
 def test_with_real_json_file():
-    json_path = os.path.join(project_root, "..", "mock", "mock_matches.json")
+    json_path = os.path.join(project_root, "..", "dataset", "mock_matches.json")
     if not os.path.exists(json_path):
-        raise FileNotFoundError(f"Could not find mock_matches.json at: {json_path}")
+        raise FileNotFoundError(f"Could not find pl_season_data.json at: {json_path}")
 
     with open(json_path, 'r') as f:
         data = json.load(f)

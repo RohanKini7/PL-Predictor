@@ -1,40 +1,44 @@
+import os, sys
 import streamlit as st
-import extra_streamlit_components as stx
-from ui_views.upcoming_fixtures import home_view
+from dotenv import load_dotenv
+
+import sys
+import os
+
+# This shows you every directory Python is looking in for imports
+print(sys.path)
+
+# This confirms if the file exists where you think it does
+
+
+from ui_views.upcoming_fixtures import upcoming_fixtures
 from ui_views.login import login_view
 from ui_views.previous_predictions import previous_predictions
+from ui_views.leader_board import leaderboard
 from supabase import create_client
-import os
-from dotenv import load_dotenv
 
 load_dotenv()
 
 def main():
     # 1. Page Config MUST be the very first Streamlit command
+
     st.set_page_config(page_title="PL Predictor 2025", layout="wide")
 
     # 2. Initialize Supabase
     supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
 
-    # 3. Initialize Cookie Manager (Optional for now, but good to have)
-    cookie_manager = stx.CookieManager()
-
-    # 4. Auth Check
+    # 3. Auth Check
     if 'user' not in st.session_state:
         login_view.show_login()
         st.stop() # Stops execution so the code below doesn't run for guests
-
     # --- EVERYTHING BELOW RUNS ONLY FOR LOGGED-IN USERS ---
-    
     user = st.session_state.user
 
-    # 5. Normalize User ID in Session State
+    # 4. Normalize User ID in Session State
     if 'user_id' not in st.session_state:
         # Check if user is a dict or object
         st.session_state.user_id = user['id'] if isinstance(user, dict) else user.id
-    
     # Safely get username from metadata
-
     username = (user.user_metadata.
                 get('username', 'User')
                 ) \
@@ -60,14 +64,13 @@ def main():
             del st.session_state[key]
         st.rerun()
 
-    # 7. Routing to Views
+    # 5. Routing to Views
     if nav == "Upcoming Fixtures":
-        home_view.show_home(supabase=supabase, user_id=st.session_state.user_id)
+        upcoming_fixtures.show_upcoming_fixtures(supabase=supabase, user_id=st.session_state.user_id)
     elif nav == "My Previous Predictions":
-        previous_predictions.show_home(supabase=supabase, user_id=st.session_state.user_id)
+        previous_predictions.show_previous_fixtures(supabase=supabase, user_id=st.session_state.user_id)
     elif nav == "Leaderboard":
-        st.title("Leaderboard")
-        st.info("Feature coming soon!")
+        leaderboard.show_leaderboard_view(supabase=supabase)
 
 if __name__ == "__main__":
     main()

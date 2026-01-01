@@ -65,3 +65,20 @@ def get_finished_matches(all_fixtures:dict) -> list:
     # We want matches where status is NOT 'FINISHED'
     finished_matches = [match for match in all_fixtures if match['status'] == 'FINISHED']
     return finished_matches
+
+def get_user_pick_for_fixture(user_pick: str, home_team: str, away_team: str) -> str:
+    if user_pick == "HOME_TEAM":
+        return  home_team
+    elif user_pick == "AWAY_TEAM":
+        return away_team
+    elif user_pick == "DRAW":
+        return "DRAW"
+    else:
+        return "No Prediction"
+
+def get_prediction_color(user_pick: str, match:dict) -> str:
+    winner = match.get('score').get('winner')
+    if user_pick == winner:
+        return "#FFFFFF"
+    else:
+        return "#CCCCCC"

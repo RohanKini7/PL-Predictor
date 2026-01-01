@@ -1,7 +1,9 @@
 import streamlit as st
 
 from src.utils import get_team_name, get_team_badge
-from src.logic.match_processor import is_match_locked, get_score_display, handle_prediction_save
+from src.match_processor import (
+    get_score_display, get_user_pick_for_fixture, get_prediction_color
+)
 
 
 
@@ -16,6 +18,8 @@ def render_finished_match_card(supabase, match: dict, locked: bool, user_pick: s
 
     home_badge = get_team_badge(match=match, team="HOME")
     away_badge = get_team_badge(match=match, team="AWAY")
+
+    user_team = get_user_pick_for_fixture(user_pick=user_pick, home_team=home_team, away_team=away_team)
 
     # 2. Score Formatting
     score_display = "vs"
@@ -54,8 +58,8 @@ def render_finished_match_card(supabase, match: dict, locked: bool, user_pick: s
                     """, unsafe_allow_html=True)
 
         st.markdown(f"""
-            <div style="text-align: center; padding: 10px; opacity: 0.8; font-size: 0.9em;">
-                My pick: <b>{user_pick}</b>
+            <div style="text-align: center; padding: 10px; opacity: 0.8; font-size: 0.9em; color: {get_prediction_color} !imp;">
+                My pick: <b>{user_team}</b>
             </div>
         """, unsafe_allow_html=True)
 
