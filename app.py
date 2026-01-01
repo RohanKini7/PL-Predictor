@@ -1,14 +1,9 @@
-import os, sys
+
 import streamlit as st
 from dotenv import load_dotenv
 
-import sys
+
 import os
-
-# This shows you every directory Python is looking in for imports
-print(sys.path)
-
-# This confirms if the file exists where you think it does
 
 
 from ui_views.upcoming_fixtures import upcoming_fixtures
@@ -24,8 +19,11 @@ def main():
 
     st.set_page_config(page_title="PL Predictor 2025", layout="wide")
 
+    url = st.secrets["SUPABASE_URL"]
+    key = st.secrets["SUPABASE_KEY"]
+
     # 2. Initialize Supabase
-    supabase = create_client(os.getenv("SUPABASE_URL"), os.getenv("SUPABASE_KEY"))
+    supabase = create_client(url, key)
 
     # 3. Auth Check
     if 'user' not in st.session_state:

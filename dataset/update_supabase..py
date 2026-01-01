@@ -1,14 +1,18 @@
 import json
 import os
+import streamlit as st
+
 from dotenv import load_dotenv
 from supabase import create_client, Client
 
 load_dotenv()
 
 # Initialize Supabase Client
-url = os.getenv("SUPABASE_URL")
-key = os.getenv("SUPABASE_KEY")  # Use service role for write access
-supabase: Client = create_client(url, key)
+url = st.secrets["SUPABASE_URL"]
+key = st.secrets["SUPABASE_KEY"]
+
+# 2. Initialize Supabase
+supabase = create_client(url, key)
 
 
 def update_fixtures_from_json():

@@ -2,7 +2,8 @@ import subprocess
 import json
 import os
 import sys
-
+import streamlit as st
+from supabase import create_client, Client
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 from dotenv import load_dotenv
@@ -11,7 +12,7 @@ load_dotenv()
 
 def fetch_pl_fixtures():
     # This is the exact command that worked for you in the terminal
-    token = os.getenv("FOOTBALL_API_KEY")
+    token = st.secrets("FOOTBALL_API_KEY")
     command = [
         "curl", 
         "-X", "GET", 
