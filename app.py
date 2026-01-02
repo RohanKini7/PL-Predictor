@@ -23,8 +23,8 @@ def main():
 
     st.set_page_config(page_title="PL Predictor 2025", layout="wide")
 
-    url = st.secrets["SUPABASE_URL"]
-    key = st.secrets["SUPABASE_KEY"]
+    url = st.secrets["SUPABASE_URL"] or os.environ.get("SUPABASE_URL")
+    key = st.secrets["SUPABASE_KEY"] or os.environ.get("SUPABASE_KEY")
 
     # 2. Initialize Supabase
     supabase = create_client(url, key)
