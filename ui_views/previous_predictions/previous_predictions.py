@@ -1,0 +1,87 @@
+import streamlit as st
+import os
+import json
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(current_dir)
+
+from src.match_processor import (
+    process_fixtures, is_match_locked, get_user_predictions, get_finished_matches)
+from .prev_components import render_finished_match_card
+from src.utils import PL_CREST
+
+
+def show_previous_fixtures(supabase, user_id: str):
+    # 1. Data Fetch
+    user_predictions = get_user_predictions(supabase=supabase, user_id=user_id)
+
+    json_path = os.path.join(project_root, "..", "dataset", "pl_season_data.json")
+    with open(json_path, 'r') as f:
+        data = json.load(f)
+        matches = data.get("matches", [])
+
+    finished_matches = get_finished_matches(matches)
+    grouped, current_md = process_fixtures(finished_matches)
+
+    st.markdown("""
+           <style>
+               .block-container {
+                   padding-top: 0rem !important;
+                   padding-bottom: 0rem !important;
+
+               }
+           </style>
+       """, unsafe_allow_html=True)
+    with st.container():
+        st.markdown("""
+               <style>
+                   .block-container {
+                       padding-top: 1rem !important;
+                       padding-bottom: 0rem !important;
+                   }
+               </style>
+           """, unsafe_allow_html=True)
+
+        # We use raw HTML instead of st.columns to prevent Streamlit's default mobile squashing
+        st.markdown("""
+               <div style="
+                   display: flex;
+                   flex-direction: column;
+                   align-items: center;
+                   justify-content: center;
+                   width: 100%;
+                   margin-bottom: 10px;
+               ">
+                   <h1 style="
+                       margin: 0;
+                       line-height: 1.1;
+                       text-align: center;
+                       /* clamp(MIN, PREFERRED, MAX) */
+                       /* This makes it huge on desktop (5rem) but stays readable on phone (2.5rem) */
+                       font-size: clamp(2.5rem, 12vw, 5rem);
+                       color: white;
+                       font-weight: 900;
+                   ">
+                       Banter Cave: PL Prediction Championship
+                   </h1>
+               </div>
+           """, unsafe_allow_html=True)
+
+    # 3. Just Render
+    for md, matches in grouped.items():
+        with st.expander(f"Matchday {md}", expanded=(md == current_md)):
+            for m in matches:
+                # Use shared logic to check locking
+                fixture_id = m["id"]
+                user_pick = user_predictions.get(fixture_id, None)
+                locked = is_match_locked(m["utcDate"])
+
+                render_finished_match_card(
+                    supabase=supabase,
+                    match=m,
+                    locked=locked,
+                    user_pick=user_pick,
+                    fixture_id=fixture_id,
+                    user_id=user_id,
+                )
+

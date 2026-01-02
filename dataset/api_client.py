@@ -1,13 +1,21 @@
 import subprocess
 import json
 import os
+
+import streamlit as st
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
 from dotenv import load_dotenv
 
 load_dotenv()
 
 def fetch_pl_fixtures():
     # This is the exact command that worked for you in the terminal
-    token = os.getenv("FOOTBALL_API_KEY")
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    os.chdir(base_dir)
+
+    token = os.environ.get("FOOTBALL_API_KEY") or st.secrets["FOOTBALL_API_KEY"]
     command = [
         "curl", 
         "-X", "GET", 
@@ -21,18 +29,19 @@ def fetch_pl_fixtures():
         result = subprocess.run(command, capture_output=True, text=True)
         
         if result.returncode != 0:
-            print(f"❌ Curl Error: {result.stderr}")
+            print(f"Curl Error: {result.stderr}")
             return []
-            
+        filename = os.path.join(base_dir, "dataset","pl_season_data.json")
         # Convert the text result into a Python dictionary
         data = json.loads(result.stdout)
-        return data.get("matches", [])
+        with open(filename, "w", encoding="utf-8") as f:
+            # indent=4 makes the file human-readable (pretty-print)
+            json.dump(data, f, indent=4)
+            print("Done")
         
     except Exception as e:
-        print(f"❌ Failed to run curl from Python: {e}")
+        print(f"Failed to run curl from Python: {e}")
         return []
     
 if __name__ == "__main__":
-    fixtures = fetch_pl_fixtures()
-    for fixture in fixtures:
-        print(fixture)
+    fetch_pl_fixtures()

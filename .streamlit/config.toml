@@ -1,0 +1,6 @@
+[theme]
+primaryColor = "#ff005a"    # PL Pink for buttons and highlights
+backgroundColor = "#37003C"  # Deep Purple for the main background
+secondaryBackgroundColor = "#4E0055" #Light Purple for sidebar and containers
+textColor = "#ffffff"       # White text for readability
+font = "sans serif"
