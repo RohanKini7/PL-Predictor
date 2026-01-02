@@ -14,8 +14,6 @@ from src.match_processor import (
 from .upc_components import render_match_card
 
 
-
-
 def show_upcoming_fixtures(supabase, user_id:str):
     # 1. Data Fetch
     user_predictions = get_user_predictions(supabase=supabase, user_id=user_id)
@@ -27,7 +25,6 @@ def show_upcoming_fixtures(supabase, user_id:str):
 
     upcoming_matches = get_upcoming_matches(matches)
     grouped, current_md = process_fixtures(upcoming_matches)
-
 
     st.markdown("""
         <style>
@@ -89,4 +86,3 @@ def show_upcoming_fixtures(supabase, user_id:str):
                     fixture_id=fixture_id,
                     user_id=user_id,
                 )
-

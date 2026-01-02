@@ -48,7 +48,7 @@ def update_fixtures_from_json():
     # 2. Upsert to Supabase
     # on_conflict handles updating existing IDs instead of failing
     try:
-        supabase.table("mock_fixtures").upsert(
+        supabase.table("fixtures").upsert(
             formatted_matches,
             on_conflict="fixture_id"
         ).execute()
