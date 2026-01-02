@@ -14,7 +14,6 @@ def check_supabase():
         supabase = create_client(url, key)
         
         # 3. Try a simple query
-        response = supabase.table("predictions").select("*").limit(1).execute()
         response = supabase.table("profiles").select("*").limit(1).execute()
 
         print("Connection established")
