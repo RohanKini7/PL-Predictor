@@ -56,7 +56,7 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
             # Using markdown to center the text and add a bit of styling
             st.markdown(f"""
                 <div style="text-align: center; padding: 10px; opacity: 0.8; font-size: 0.9em;">
-                    Match Finished. Your pick: <b>{user_team or 'No prediction'}</b>
+                    Your pick: <b>{user_team or 'No prediction'}</b>
                 </div>
             """, unsafe_allow_html=True)
         elif locked:
@@ -71,7 +71,6 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
 
         else:
             # Game is OPEN - Show 3 buttons for Home, Draw, Away
-            st.write("Make your prediction:")
             btn_cols = st.columns(3)
 
             # Options mapping

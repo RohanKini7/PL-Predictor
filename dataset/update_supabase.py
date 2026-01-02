@@ -6,10 +6,11 @@ from dotenv import load_dotenv
 from supabase import create_client, Client
 
 load_dotenv()
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Initialize Supabase Client
-url = st.secrets["SUPABASE_URL"]
-key = st.secrets["SUPABASE_KEY"]
+url = os.environ.get("SUPABASE_URL") or st.secrets["SUPABASE_URL"]
+key = os.environ.get("SUPABASE_KEY") or st.secrets["SUPABASE_KEY"]
 
 # 2. Initialize Supabase
 supabase = create_client(url, key)
@@ -17,7 +18,7 @@ supabase = create_client(url, key)
 
 def update_fixtures_from_json():
     # 1. Load your dataset JSON file
-    with open("dataset/pl_season_data.json", "r") as f:
+    with open("pl_season_data.json", "r") as f:
         data = json.load(f)
 
     matches = data.get("matches", [])
@@ -54,7 +55,3 @@ def update_fixtures_from_json():
         print(f"Successfully updated {len(formatted_matches)} rows.")
     except Exception as e:
         print(f"Error updating Supabase: {e}")
-
-
-if __name__ == "__main__":
-    update_fixtures_from_json()
