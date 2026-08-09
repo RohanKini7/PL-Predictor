@@ -53,7 +53,7 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
 
         # 3. Prediction UI Layer
         if status == 'FINISHED':
-            # Using markdown to center the text and add a bit of styling
+            # Using Markdown to center the text and add a bit of styling
             st.markdown(f"""
                 <div style="text-align: center; padding: 10px; opacity: 0.8; font-size: 0.9em;">
                     Your pick: <b>{user_team or 'No prediction'}</b>
@@ -67,7 +67,6 @@ def render_match_card(supabase, match: dict, locked: bool, user_pick: str, user_
                 🔒 Locked. Your prediction: {user_team}</b>
             </div>
                 """, unsafe_allow_html=True)
-
 
         else:
             # Game is OPEN - Show 3 buttons for Home, Draw, Away

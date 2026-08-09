@@ -19,7 +19,6 @@ def main():
 
     # 3. Write the .txt log file
     print("Step 3: Writing timestamp...")
-    uk_tz = pytz.timezone('Europe/London')
     german_tz = pytz.timezone('Europe/Berlin')
     now = datetime.now(german_tz)
     timestamp_str = now.strftime("%Y-%m-%d %H:%M:%S")
